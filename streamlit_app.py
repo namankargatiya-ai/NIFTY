@@ -78,18 +78,6 @@ with st.sidebar:
         upstox_token = st.text_input("Upstox access token", value=default_token, type="password")
         index_key = st.text_input("Instrument key", value="NSE_INDEX|Nifty 50")
 
-    st.divider()
-    st.header("Session Context (optional)")
-    st.caption("Free data sources don't reliably expose these — paste today's published figures if you have them.")
-    col1, col2 = st.columns(2)
-    with col1:
-        advances = st.number_input("Advances", min_value=0, value=0, step=1)
-        fii = st.number_input("FII net (₹ Cr)", value=0.0, step=10.0)
-    with col2:
-        declines = st.number_input("Declines", min_value=0, value=0, step=1)
-        dii = st.number_input("DII net (₹ Cr)", value=0.0, step=10.0)
-    vix_change = st.number_input("India VIX % change vs prev session", value=0.0, step=0.5)
-
     run_button = st.button("🔄 Generate Report", type="primary", use_container_width=True)
 
 
@@ -128,14 +116,7 @@ if run_button:
             st.code(traceback.format_exc())
             st.stop()
 
-    report_md = generate_report(
-        snapshot,
-        advances=advances or None,
-        declines=declines or None,
-        fii_net_cr=fii or None,
-        dii_net_cr=dii or None,
-        vix_change_pct=vix_change or None,
-    )
+    report_md = generate_report(snapshot)
 
     st.session_state["last_report"] = report_md
     st.session_state["last_generated_at"] = today
