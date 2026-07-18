@@ -70,6 +70,51 @@ python main.py --breadth 2012 2224 --fii -376.41 --dii 1017.89 --vix-change -2.9
 python main.py --ticker "^NSEBANK"
 ```
 
+## Deploying as a Web App (Streamlit Cloud)
+
+There are **two different entry points** in this project — using the wrong
+one is the most common source of errors:
+
+| File | Purpose | How to run it |
+|---|---|---|
+| `main.py` | Command-line script | `python main.py` in a terminal |
+| `streamlit_app.py` | Web app (sidebar, buttons, live report) | Streamlit Cloud, or `streamlit run streamlit_app.py` locally |
+
+**If you saw `ModuleNotFoundError` on Streamlit Cloud pointing at `main.py`:**
+that's expected — `main.py` uses `argparse` and isn't built to run as a
+Streamlit page. Point Streamlit Cloud at **`streamlit_app.py`** instead.
+
+### Steps to deploy
+
+1. Push this whole repo (including the `nifty_analyzer/` folder) to GitHub.
+   Double-check on github.com that `nifty_analyzer/__init__.py` and its
+   sibling files actually show up in the repo — a `ModuleNotFoundError` for
+   `nifty_analyzer` almost always means that folder didn't get pushed.
+2. On [share.streamlit.io](https://share.streamlit.io), create a new app
+   pointing at your repo.
+3. Set **"Main file path"** to `streamlit_app.py` (not `main.py`).
+4. Confirm `requirements.txt` is at the **repo root** — Streamlit Cloud
+   installs from that file automatically.
+5. (Optional) If you want your Upstox token pre-filled instead of pasting
+   it into the UI each day, add it under your app's **Settings → Secrets**:
+   ```toml
+   UPSTOX_ACCESS_TOKEN = "your_daily_token"
+   ```
+
+### Running it locally instead
+
+```bash
+streamlit run streamlit_app.py
+```
+
+## Is the Data "Live"?
+
+- **yfinance (default):** near-real-time but **exchange-delayed** — fine for
+  technical/educational analysis, not for latency-sensitive decisions.
+- **Upstox (with your access token):** genuine **real-time NSE data** during
+  market hours (LTP, true intraday candles, live VWAP), since it flows
+  through your actual broker market-data entitlement.
+
 ## Running Without Live Market Access
 
 If you don't have network access to Yahoo Finance / NSE (e.g. in a sandboxed
