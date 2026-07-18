@@ -3,6 +3,7 @@ pandas>=2.0.0
 numpy>=1.24.0
 requests>=2.31.0
 nsepython>=2.86
+streamlit>=1.35.0
 
 # Upstox integration uses only `requests` above (no official SDK
 # required) so no extra dependency is needed for --source upstox.
